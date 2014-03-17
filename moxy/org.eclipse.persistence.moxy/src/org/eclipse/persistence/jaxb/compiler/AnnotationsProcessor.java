@@ -173,6 +173,7 @@ import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 public class AnnotationsProcessor {
     static final String JAVAX_ACTIVATION_DATAHANDLER = "javax.activation.DataHandler";
     static final String JAVAX_MAIL_INTERNET_MIMEMULTIPART = "javax.mail.internet.MimeMultipart";
+    
     private static final String JAVAX_XML_BIND_JAXBELEMENT = "javax.xml.bind.JAXBElement";
     private static final String JAVAX_XML_BIND_ANNOTATION = "javax.xml.bind.annotation";
     private static final String OXM_ANNOTATIONS = "org.eclipse.persistence.oxm.annotations";
@@ -3026,6 +3027,12 @@ public class AnnotationsProcessor {
                     property.setOriginalSetMethodName(setMethod.getName());
                     if (property.getSetMethodName() == null) {
                         property.setSetMethodName(setMethod.getName());
+                    }
+                } else if ( cls.isAbstract() ){
+                    String virtualSetMethodName = SET_STR + propertyName.substring(0,1).toUpperCase() + propertyName.substring(1);
+                    property.setOriginalSetMethodName(virtualSetMethodName);
+                    if (property.getSetMethodName() == null) {
+                        property.setSetMethodName(virtualSetMethodName);
                     }
                 }
                 property.setMethodProperty(true);
