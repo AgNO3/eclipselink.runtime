@@ -353,12 +353,12 @@ public class JavaClassImpl implements JavaClass {
         if(jClass.isInterface()) {
             Class[] superInterfaces = jClass.getInterfaces();
             if(superInterfaces != null) {
-                if(superInterfaces.length == 1) {
+                if(superInterfaces.length == 1 && !isInternalInterface(superInterfaces[0])) {
                     return javaModelImpl.getClass(superInterfaces[0]);
                 } else {
                     Class parent = null;
                     for(Class next:superInterfaces) {
-                        if(!(next.getName().startsWith("java.") || next.getName().startsWith("javax."))) {
+                        if(!isInternalInterface(next)) {
                             if(parent == null) {
                                 parent = next;
                             } else {
@@ -371,6 +371,10 @@ public class JavaClassImpl implements JavaClass {
             }
         }
         return javaModelImpl.getClass(jClass.getSuperclass());
+    }
+
+    private boolean isInternalInterface ( Class cl ) {
+        return cl.getName().startsWith("java.") || cl.getName().startsWith("javax.");
     }
 
     @Override
