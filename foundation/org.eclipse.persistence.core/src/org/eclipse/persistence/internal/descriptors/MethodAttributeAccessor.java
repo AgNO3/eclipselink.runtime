@@ -51,8 +51,8 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Return the return type of the method accessor.
      */
-    public Class getAttributeClass () {
-        if ( getGetMethod() == null ) {
+    public Class getAttributeClass() {
+        if (getGetMethod() == null) {
             return null;
         }
 
@@ -63,7 +63,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Gets the value of an instance variable in the object.
      */
-    public Object getAttributeValueFromObject ( Object anObject ) throws DescriptorException {
+    public Object getAttributeValueFromObject(Object anObject) throws DescriptorException {
         return getAttributeValueFromObject(anObject, (Object[]) null);
     }
 
@@ -71,13 +71,13 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Gets the value of an instance variable in the object.
      */
-    protected Object getAttributeValueFromObject ( Object anObject, Object[] parameters ) throws DescriptorException {
+    protected Object getAttributeValueFromObject(Object anObject, Object[] parameters) throws DescriptorException {
         try {
-            if ( PrivilegedAccessHelper.shouldUsePrivilegedAccess() ) {
+            if (PrivilegedAccessHelper.shouldUsePrivilegedAccess()) {
                 try {
                     return AccessController.doPrivileged(new PrivilegedMethodInvoker(getGetMethod(), anObject, parameters));
                 }
-                catch ( PrivilegedActionException exception ) {
+                catch (PrivilegedActionException exception) {
                     Exception throwableException = exception.getException();
                     if ( throwableException instanceof IllegalAccessException ) {
                         throw DescriptorException.illegalAccessWhileGettingValueThruMethodAccessor(
@@ -96,20 +96,20 @@ public class MethodAttributeAccessor extends AttributeAccessor {
                 return this.getMethod.invoke(anObject, parameters);
             }
         }
-        catch ( IllegalArgumentException exception ) {
+        catch (IllegalArgumentException exception) {
             throw DescriptorException
                     .illegalArgumentWhileGettingValueThruMethodAccessor(getGetMethodName(), anObject.getClass().getName(), exception);
         }
-        catch ( IllegalAccessException exception ) {
+        catch (IllegalAccessException exception) {
             throw DescriptorException.illegalAccessWhileGettingValueThruMethodAccessor(getGetMethodName(), anObject.getClass().getName(), exception);
         }
-        catch ( InvocationTargetException exception ) {
+        catch (InvocationTargetException exception) {
             throw DescriptorException.targetInvocationWhileGettingValueThruMethodAccessor(
                 getGetMethodName(),
                 anObject.getClass().getName(),
                 exception);
         }
-        catch ( NullPointerException exception ) {
+        catch (NullPointerException exception) {
             // Some JVM's throw this exception for some very odd reason
             throw DescriptorException.nullPointerWhileGettingValueThruMethodAccessor(getGetMethodName(), anObject.getClass().getName(), exception);
         }
@@ -120,7 +120,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
      * Return the accessor method for the attribute accessor.
      * 266912: For Metamodel API - change visibility from protected
      */
-    public Method getGetMethod () {
+    public Method getGetMethod() {
         return getMethod;
     }
 
@@ -128,7 +128,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Return the name of the accessor method for the attribute accessor.
      */
-    public String getGetMethodName () {
+    public String getGetMethodName() {
         return getMethodName;
     }
 
@@ -141,9 +141,9 @@ public class MethodAttributeAccessor extends AttributeAccessor {
      * @return
      */
     // Note: SDO overrides this method and will handle a null GetMethod
-    public Class getGetMethodReturnType () throws DescriptorException {
+    public Class getGetMethodReturnType() throws DescriptorException {
         // 323403: If the getMethod is missing - check for "_persistence_*_vh" to see if weaving was expected
-        if ( null == getGetMethod() && null != getGetMethodName() && ( getGetMethodName().indexOf(Helper.PERSISTENCE_FIELDNAME_PREFIX) > -1 ) ) {
+        if (null == getGetMethod() && null != getGetMethodName() && (getGetMethodName().indexOf(Helper.PERSISTENCE_FIELDNAME_PREFIX) > -1)) {
             // warn before a possible NPE on accessing a weaved method that does not exist
             AbstractSessionLog.getLog().log(
                 SessionLog.FINEST,
@@ -158,11 +158,11 @@ public class MethodAttributeAccessor extends AttributeAccessor {
                 "",
                 null);
         }
-        if ( PrivilegedAccessHelper.shouldUsePrivilegedAccess() ) {
+        if (PrivilegedAccessHelper.shouldUsePrivilegedAccess()) {
             try {
                 return (Class) AccessController.doPrivileged(new PrivilegedGetMethodReturnType(getGetMethod()));
             }
-            catch ( PrivilegedActionException exception ) {
+            catch (PrivilegedActionException exception) {
                 // we should not get here since this call does not throw any checked exceptions
                 return null;
             }
@@ -176,7 +176,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * @return whether resolving the set method is delayed
      */
-    protected boolean isDelayedSetMethod () {
+    protected boolean isDelayedSetMethod() {
         return this.delayedSetMethod;
     }
     
@@ -186,7 +186,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Return the set method for the attribute accessor.
      */
-    protected Method getSetMethod () {
+    protected Method getSetMethod() {
         return setMethod;
     }
 
@@ -194,38 +194,38 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Return the name of the set method for the attribute accessor.
      */
-    public String getSetMethodName () {
+    public String getSetMethodName() {
         return setMethodName;
     }
 
 
-    public Class getSetMethodParameterType () {
+    public Class getSetMethodParameterType() {
         return getSetMethodParameterType(0);
     }
 
 
-    protected Class getSetMethodParameterType ( int index ) {
+    protected Class getSetMethodParameterType(int index) {
 
-        if ( isDelayedSetMethod() ) {
+        if (isDelayedSetMethod()) {
             return getGetMethodReturnType();
         }
 
-        if ( PrivilegedAccessHelper.shouldUsePrivilegedAccess() ) {
+        if (PrivilegedAccessHelper.shouldUsePrivilegedAccess()) {
             try {
-                return ( (Class[]) AccessController.doPrivileged(new PrivilegedGetMethodParameterTypes(getSetMethod())) )[ index ];
+                return ((Class[]) AccessController.doPrivileged(new PrivilegedGetMethodParameterTypes(getSetMethod())))[index];
             }
-            catch ( PrivilegedActionException exception ) {
+            catch (PrivilegedActionException exception) {
                 // we should not get here since this call does not throw any checked exceptions
                 return null;
             }
         }
         else {
-            return PrivilegedAccessHelper.getMethodParameterTypes(getSetMethod())[ index ];
+            return PrivilegedAccessHelper.getMethodParameterTypes(getSetMethod())[index];
         }
     }
 
 
-    protected Class[] getSetMethodParameterTypes () {
+    protected Class[] getSetMethodParameterTypes() {
         return new Class[] {
             getGetMethodReturnType()
         };
@@ -236,7 +236,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
      * Set get and set method after creating these methods by using
      * get and set method names
      */
-    public void initializeAttributes ( Class theJavaClass ) throws DescriptorException {
+    public void initializeAttributes(Class theJavaClass) throws DescriptorException {
         initializeAttributes(theJavaClass, (Class[]) null);
     }
 
@@ -245,22 +245,20 @@ public class MethodAttributeAccessor extends AttributeAccessor {
      * Set get and set method after creating these methods by using
      * get and set method names
      */
-    protected void initializeAttributes ( Class theJavaClass, Class[] getParameterTypes ) throws DescriptorException {
-        if ( getAttributeName() == null ) {
+    protected void initializeAttributes(Class theJavaClass, Class[] getParameterTypes) throws DescriptorException {
+        if (getAttributeName() == null) {
             throw DescriptorException.attributeNameNotSpecified();
         }
         try {
             setGetMethod(Helper.getDeclaredMethod(theJavaClass, getGetMethodName(), getParameterTypes));
-            
-            
 
             // The parameter type for the set method must always be the return type of the get method.
-            if ( !isWriteOnly() ) {
+            if (!isWriteOnly()) {
                 setSetMethod(Helper.getDeclaredMethod(theJavaClass, getSetMethodName(), getSetMethodParameterTypes()));
             }
         }
-        catch ( NoSuchMethodException ex ) {
-            if ( theJavaClass.isInterface() ) {
+        catch (NoSuchMethodException ex) {
+            if (theJavaClass.isInterface()) {
                 this.delayedSetMethod = true;
                 return;
             }
@@ -271,7 +269,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
             descriptorException.setInternalException(ex);
             throw descriptorException;
         }
-        catch ( SecurityException exception ) {
+        catch (SecurityException exception) {
             DescriptorException descriptorException = DescriptorException.securityWhileInitializingAttributesInMethodAccessor(
                 getSetMethodName(),
                 getGetMethodName(),
@@ -286,12 +284,12 @@ public class MethodAttributeAccessor extends AttributeAccessor {
      * Returns true if this attribute accessor has been initialized and now stores a reference to the
      * class's attribute. An attribute accessor can become uninitialized on serialization.
      */
-    public boolean isInitialized () {
-        return ( this.getMethod != null || isReadOnly() ) && ( this.setMethod != null || isWriteOnly() || isDelayedSetMethod() );
+    public boolean isInitialized() {
+        return (this.getMethod != null || isReadOnly()) && (this.setMethod != null || isWriteOnly() || isDelayedSetMethod());
     }
 
 
-    public boolean isMethodAttributeAccessor () {
+    public boolean isMethodAttributeAccessor() {
         return true;
     }
 
@@ -299,7 +297,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Sets the value of the instance variable in the object to the value.
      */
-    public void setAttributeValueInObject ( Object domainObject, Object attributeValue ) throws DescriptorException {
+    public void setAttributeValueInObject(Object domainObject, Object attributeValue) throws DescriptorException {
         setAttributeValueInObject(domainObject, attributeValue, new Object[] {
             attributeValue
         });
@@ -309,14 +307,14 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Sets the value of the instance variable in the object to the value.
      */
-    protected void setAttributeValueInObject ( Object domainObject, Object attributeValue, Object[] parameters ) throws DescriptorException {
+    protected void setAttributeValueInObject(Object domainObject, Object attributeValue, Object[] parameters) throws DescriptorException {
         
         Method overrideSetMethod = getSetMethod(); 
-        if ( isDelayedSetMethod() && overrideSetMethod == null ) {
+        if (isDelayedSetMethod() && overrideSetMethod == null) {
             try {
                 overrideSetMethod = Helper.getDeclaredMethod(domainObject.getClass(), getSetMethodName(), getSetMethodParameterTypes());
             }
-            catch ( NoSuchMethodException e ) {
+            catch (NoSuchMethodException e) {
                 throw DescriptorException.noSuchMethodWhileInitializingAttributesInMethodAccessor(
                     getSetMethodName(),
                     getGetMethodName(),
@@ -325,11 +323,11 @@ public class MethodAttributeAccessor extends AttributeAccessor {
         }
             
         try {
-            if ( PrivilegedAccessHelper.shouldUsePrivilegedAccess() ) {
+            if (PrivilegedAccessHelper.shouldUsePrivilegedAccess()) {
                 try {
                     AccessController.doPrivileged(new PrivilegedMethodInvoker(overrideSetMethod, domainObject, parameters));
                 }
-                catch ( PrivilegedActionException exception ) {
+                catch (PrivilegedActionException exception) {
                     Exception throwableException = exception.getException();
                     if ( throwableException instanceof IllegalAccessException ) {
                         throw DescriptorException.illegalAccessWhileSettingValueThruMethodAccessor(
@@ -350,22 +348,22 @@ public class MethodAttributeAccessor extends AttributeAccessor {
                 overrideSetMethod.invoke(domainObject, parameters);
             }
         }
-        catch ( IllegalAccessException exception ) {
+        catch (IllegalAccessException exception) {
             throw DescriptorException.illegalAccessWhileSettingValueThruMethodAccessor(getSetMethodName(), attributeValue, exception);
         }
-        catch ( IllegalArgumentException exception ) {
+        catch (IllegalArgumentException exception) {
             // TODO: This code should be removed, it should not be required and may cause unwanted sideeffects.
             // Allow XML change set to merge correctly since new value in XML change set is always String
             try {
-                if ( attributeValue instanceof String ) {
+                if (attributeValue instanceof String) {
                     Object newValue = ConversionManager.getDefaultManager().convertObject(attributeValue, getAttributeClass());
                     Object[] newParameters = new Object[1];
-                    newParameters[ 0 ] = newValue;
-                    if ( PrivilegedAccessHelper.shouldUsePrivilegedAccess() ) {
+                    newParameters[0] = newValue;
+                    if (PrivilegedAccessHelper.shouldUsePrivilegedAccess()) {
                         try {
                             AccessController.doPrivileged(new PrivilegedMethodInvoker(getSetMethod(), domainObject, newParameters));
                         }
-                        catch ( PrivilegedActionException exc ) {
+                        catch (PrivilegedActionException exc) {
                             // Do nothing and move on to throw the original exception
                         }
                     }
@@ -375,15 +373,15 @@ public class MethodAttributeAccessor extends AttributeAccessor {
                     return;
                 }
             }
-            catch ( Exception e ) {
+            catch (Exception e) {
                 // Do nothing and move on to throw the original exception
             }
             throw DescriptorException.illegalArgumentWhileSettingValueThruMethodAccessor(getSetMethodName(), attributeValue, exception);
         }
-        catch ( InvocationTargetException exception ) {
+        catch (InvocationTargetException exception) {
             throw DescriptorException.targetInvocationWhileSettingValueThruMethodAccessor(getSetMethodName(), attributeValue, exception);
         }
-        catch ( NullPointerException exception ) {
+        catch (NullPointerException exception) {
             try {
                 // TODO: This code should be removed, it should not be required and may cause unwanted side effects.
                 // cr 3737 If a null pointer was thrown because EclipseLink attempted to set a null reference into a
@@ -393,14 +391,14 @@ public class MethodAttributeAccessor extends AttributeAccessor {
 
                 // Found when fixing Bug2910086
                 if ( fieldClass.isPrimitive() && ( attributeValue == null ) ) {
-                    parameters[ parameters.length - 1 ] = ConversionManager.getDefaultManager().convertObject(Integer.valueOf(0), fieldClass);
-                    if ( PrivilegedAccessHelper.shouldUsePrivilegedAccess() ) {
+                    parameters[parameters.length - 1] = ConversionManager.getDefaultManager().convertObject(Integer.valueOf(0), fieldClass);
+                    if (PrivilegedAccessHelper.shouldUsePrivilegedAccess()) {
                         try {
                             AccessController.doPrivileged(new PrivilegedMethodInvoker(overrideSetMethod, domainObject, parameters));
                         }
-                        catch ( PrivilegedActionException exc ) {
+                        catch (PrivilegedActionException exc) {
                             Exception throwableException = exc.getException();
-                            if ( throwableException instanceof IllegalAccessException ) {
+                            if (throwableException instanceof IllegalAccessException) {
                                 throw DescriptorException.nullPointerWhileSettingValueThruInstanceVariableAccessor(
                                     getAttributeName(),
                                     attributeValue,
@@ -424,10 +422,10 @@ public class MethodAttributeAccessor extends AttributeAccessor {
                     throw DescriptorException.nullPointerWhileSettingValueThruInstanceVariableAccessor(getAttributeName(), attributeValue, exception);
                 }
             }
-            catch ( IllegalAccessException accessException ) {
+            catch (IllegalAccessException accessException) {
                 throw DescriptorException.nullPointerWhileSettingValueThruInstanceVariableAccessor(getAttributeName(), attributeValue, exception);
             }
-            catch ( InvocationTargetException invocationException ) {
+            catch (InvocationTargetException invocationException) {
                 throw DescriptorException.nullPointerWhileSettingValueThruInstanceVariableAccessor(getAttributeName(), attributeValue, exception);
             }
         }
@@ -437,7 +435,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Set the accessor method for the attribute accessor.
      */
-    protected void setGetMethod ( Method getMethod ) {
+    protected void setGetMethod(Method getMethod) {
         this.getMethod = getMethod;
     }
 
@@ -445,7 +443,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Set the name of the accessor method for the attribute accessor.
      */
-    public void setGetMethodName ( String getMethodName ) {
+    public void setGetMethodName(String getMethodName) {
         this.getMethodName = getMethodName;
     }
 
@@ -453,7 +451,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Set the set method for the attribute accessor.
      */
-    protected void setSetMethod ( Method setMethod ) {
+    protected void setSetMethod(Method setMethod) {
         this.setMethod = setMethod;
     }
 
@@ -461,7 +459,7 @@ public class MethodAttributeAccessor extends AttributeAccessor {
     /**
      * Set the name of the set method for the attribute accessor.
      */
-    public void setSetMethodName ( String setMethodName ) {
+    public void setSetMethodName(String setMethodName) {
         this.setMethodName = setMethodName;
     }
     
